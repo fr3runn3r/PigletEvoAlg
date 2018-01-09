@@ -1,36 +1,35 @@
 import java.util.Random;
 
 /**
- * A strategy that has a boolean response for each possible game situation
+ * Simplified hold at strategy
  *
  * @author Peter Fletcher
- * @version 0.2
+ * @version 0.1
  */
-public class ComprehensiveStrategy implements Strategy
+public class SimpleStrategy implements Strategy
 {
-    // boolean array which holds the strategy's responses
-    private boolean[] strat;
+    private int[] strat;
     private int goal;
-
+    
     /**
-     * Constructor for objects of class ComprehensiveStrategy, creates a random strategy for a game with a goal of 10
+     * Constructor for objects of class SimpleStrategy, creates a random strategy for a game with a goal of 10
      */
-    public ComprehensiveStrategy()
+    public SimpleStrategy()
     {
-        strat = new boolean[1000];
         goal = 10;
+        strat = new int[100];
         randomise();
     }
     
     /**
-     * Constructor for objects of class ComprehensiveStrategy, creates an optionally random strategy for a game with a goal of 10
+     * Constructor for objects of class SimpleStrategy, creates an optionally random strategy for a game with a goal of 10
      * 
      * @param random Whether the strategy should be randomised
      */
-    public ComprehensiveStrategy(boolean random)
+    public SimpleStrategy(boolean random)
     {
-        strat = new boolean[1000];
         goal = 10;
+        strat = new int[100];
         if (random)
         {
             randomise();
@@ -38,27 +37,28 @@ public class ComprehensiveStrategy implements Strategy
     }
     
     /**
-     * Constructor for objects of class ComprehensiveStrategy, creates a random strategy for a game with an arbitrary goal
-     * 
-     * @param goal The number at which this strategy considers it has won
-     */
-    public ComprehensiveStrategy(int goal)
-    {
-        this.goal = goal;
-        strat = new boolean[goal * goal * goal];
-        randomise();
-    }
-    
-    /**
-     * Constructor for objects of class ComprehensiveStrategy, creates an optionally random strategy for a game with an arbitrary goal
+     * Constructor for objects of class SimpleStrategy, creates a random strategy for a game with an arbitrary goal
      * 
      * @param goal The number at which this strategy considers it has won
      * @param random Whether the strategy should be randomised
      */
-    public ComprehensiveStrategy(int goal, boolean random)
+    public SimpleStrategy(int goal)
     {
         this.goal = goal;
-        strat = new boolean[goal * goal * goal];
+        strat = new int[goal*goal];
+        randomise();
+    }
+    
+    /**
+     * Constructor for objects of class SimpleStrategy, creates an optionally random strategy for a game with an arbitrary goal
+     * 
+     * @param goal The number at which this strategy considers it has won
+     * @param random Whether the strategy should be randomised
+     */
+    public SimpleStrategy(int goal, boolean random)
+    {
+        this.goal = goal;
+        strat = new int[goal*goal];
         if (random)
         {
             randomise();
@@ -76,8 +76,13 @@ public class ComprehensiveStrategy implements Strategy
      */
     public boolean getResponse(int i, int j, int k)
     {
-        // put your code here
-        return strat[goal*goal*i + goal*j + k];
+        int val = strat[goal * i + j];
+        if (k <= val)
+        {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     /**
@@ -91,20 +96,11 @@ public class ComprehensiveStrategy implements Strategy
      */
     public void setResponse(int i, int j, int k, boolean response)
     {
-        strat[goal*goal*i + goal*j + k] = response;
-        return;
-    }
-    
-    /**
-     * Randomise the current strategy
-     */
-    public void randomise()
-    {
-        int size = goal * goal * goal;
-        Random random = new Random();
-        for (int i = 0; i < size; i++)
+        if (response)
         {
-            strat[i] = random.nextBoolean();
+            strat[goal * i + j] = k;
+        } else {
+            strat[goal * i + j] = k - 1;
         }
     }
     
@@ -116,5 +112,17 @@ public class ComprehensiveStrategy implements Strategy
     public int getGoal()
     {
         return goal;
+    }
+    
+    /**
+     * Randomise the current strategy
+     */
+    public void randomise()
+    {
+        Random random = new Random();
+        for (int i = 0; i < goal*goal; i++)
+        {
+            strat[i] = random.nextInt(goal);
+        }
     }
 }
